@@ -13,19 +13,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   4 .debug_aranges 00000038  00000000  00000000  000002d8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   00000c7f  00000000  00000000  00000310  2**0
+  5 .debug_info   00000c7d  00000000  00000000  00000310  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 000008d1  00000000  00000000  00000f8f  2**0
+  6 .debug_abbrev 000008d1  00000000  00000000  00000f8d  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   000003b9  00000000  00000000  00001860  2**0
+  7 .debug_line   000003b9  00000000  00000000  0000185e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000068  00000000  00000000  00001c1c  2**2
+  8 .debug_frame  00000068  00000000  00000000  00001c18  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    0000043d  00000000  00000000  00001c84  2**0
+  9 .debug_str    00000458  00000000  00000000  00001c80  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000003ee  00000000  00000000  000020c1  2**0
+ 10 .debug_loc    000003ee  00000000  00000000  000020d8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000028  00000000  00000000  000024af  2**0
+ 11 .debug_ranges 00000028  00000000  00000000  000024c6  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -316,7 +316,7 @@ int main()
  194:	90 e0       	ldi	r25, 0x00	; 0
  196:	90 df       	rcall	.-224    	; 0xb8 <cmd>
  198:	c0 e0       	ldi	r28, 0x00	; 0
- 19a:	c6 30       	cpi	r28, 0x06	; 6
+ 19a:	ca 30       	cpi	r28, 0x0A	; 10
 
 volatile char alphabets[1][27] = {{"ABCDEFGHIJKLMNOPQRSTUVWXYZ"}}; // Initial LCD display
 
@@ -329,10 +329,10 @@ int main()
 	
 	while (1)
 	{
-		if(cursor>=6){
+		if(cursor>=10){
  19e:	9f ef       	ldi	r25, 0xFF	; 255
- 1a0:	23 ed       	ldi	r18, 0xD3	; 211
- 1a2:	80 e3       	ldi	r24, 0x30	; 48
+ 1a0:	21 ee       	ldi	r18, 0xE1	; 225
+ 1a2:	84 e0       	ldi	r24, 0x04	; 4
  1a4:	91 50       	subi	r25, 0x01	; 1
  1a6:	20 40       	sbci	r18, 0x00	; 0
  1a8:	80 40       	sbci	r24, 0x00	; 0
@@ -341,7 +341,7 @@ int main()
  1ae:	00 00       	nop
  1b0:	82 e0       	ldi	r24, 0x02	; 2
 			cursor=0;
-			_delay_ms(10000);
+			_delay_ms(1000);
 			cmd(0b00000010);// Cursor Home
  1b2:	90 e0       	ldi	r25, 0x00	; 0
  1b4:	81 df       	rcall	.-254    	; 0xb8 <cmd>
@@ -351,27 +351,27 @@ int main()
 	
 	while (1)
 	{
-		if(cursor>=6){
+		if(cursor>=10){
 			cursor=0;
  1ba:	cf 5f       	subi	r28, 0xFF	; 255
  1bc:	9f ef       	ldi	r25, 0xFF	; 255
-			_delay_ms(10000);
+			_delay_ms(1000);
 			cmd(0b00000010);// Cursor Home
 		}
 		else{
 			cursor++;
- 1be:	23 ed       	ldi	r18, 0xD3	; 211
- 1c0:	80 e3       	ldi	r24, 0x30	; 48
+ 1be:	21 ee       	ldi	r18, 0xE1	; 225
+ 1c0:	84 e0       	ldi	r24, 0x04	; 4
  1c2:	91 50       	subi	r25, 0x01	; 1
  1c4:	20 40       	sbci	r18, 0x00	; 0
  1c6:	80 40       	sbci	r24, 0x00	; 0
  1c8:	e1 f7       	brne	.-8      	; 0x1c2 <main+0x6c>
  1ca:	00 c0       	rjmp	.+0      	; 0x1cc <main+0x76>
  1cc:	00 00       	nop
- 1ce:	80 e0       	ldi	r24, 0x00	; 0
-			_delay_ms(10000);
-			cmd(00011000); // Display clear.
- 1d0:	92 e1       	ldi	r25, 0x12	; 18
+ 1ce:	88 e1       	ldi	r24, 0x18	; 24
+			_delay_ms(1000);
+			cmd(0b00011000); // Display shift.
+ 1d0:	90 e0       	ldi	r25, 0x00	; 0
  1d2:	72 df       	rcall	.-284    	; 0xb8 <cmd>
  1d4:	e2 cf       	rjmp	.-60     	; 0x19a <main+0x44>
 

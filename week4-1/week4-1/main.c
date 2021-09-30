@@ -4,24 +4,17 @@
 
 void cmd(int command)
 {
-	PORTA = 0b00000000;//Enable=0
-	_delay_ms(1);
-	PORTA = 0b00000100;//Enable=1
-	_delay_ms(1);
 	PORTB = command;
+	PORTA = 0x04;
 	_delay_ms(1);
-	PORTA = 0b00000000;
-	_delay_ms(1);
+	PORTA = 0x00;
 }
-
 void data(char str)
 {
-	PORTA = 0b00000101;
-	_delay_ms(1);
 	PORTB = str;
+	PORTA = 0x05;
 	_delay_ms(1);
-	PORTA = 0b00000001;
-	_delay_ms(1);
+	PORTA = 0x01;
 }
 
 void display1(volatile char *str)

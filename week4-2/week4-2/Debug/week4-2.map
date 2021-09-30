@@ -403,10 +403,10 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0xc7f
+.debug_info     0x00000000      0xc7d
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x780 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega128/avr51/crtatmega128.o
- .debug_info    0x00000780      0x4ff main.o
+ .debug_info    0x00000780      0x4fd main.o
 
 .debug_abbrev   0x00000000      0x8d1
  *(.debug_abbrev)
@@ -422,11 +422,11 @@ END GROUP
  *(.debug_frame)
  .debug_frame   0x00000000       0x68 main.o
 
-.debug_str      0x00000000      0x43d
+.debug_str      0x00000000      0x458
  *(.debug_str)
  .debug_str     0x00000000      0x27d C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega128/avr51/crtatmega128.o
- .debug_str     0x0000027d      0x1c0 main.o
-                                0x1f9 (size before relaxing)
+ .debug_str     0x0000027d      0x1db main.o
+                                0x214 (size before relaxing)
 
 .debug_loc      0x00000000      0x3ee
  *(.debug_loc)
