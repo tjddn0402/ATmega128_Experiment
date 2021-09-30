@@ -1,4 +1,4 @@
-#define F_CPU 16000000UL
+#define F_CPU 1600000UL
 #include<avr/io.h>
 #include<util/delay.h>
 #include <avr/interrupt.h>
@@ -12,7 +12,10 @@ volatile unsigned char period;
 void wait();
 
 ISR(INT5_vect){	period++;}
-ISR(INT6_vect){	period--;}
+ISR(INT6_vect){
+	if(period>1)
+	period--;
+}
 ISR(INT7_vect){
 	if (led_on) {
 		led_on = 0;
@@ -27,7 +30,7 @@ int main(void){
 	period=1;
 	
 	DDRA = 0b11111111; // 출력 설정
-	
+	LED=0b00000000;
 	DDRE = 0b00000000; // 입력 설정
 	PORTE = 0b11100000; // 풀업저항 설정
 	

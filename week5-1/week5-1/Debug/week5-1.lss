@@ -3,31 +3,31 @@ week5-1.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  000001a8  2**0
+  0 .data         00000000  00800100  00800100  000001b2  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000134  00000000  00000000  00000074  2**1
+  1 .text         0000013e  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000001  00800100  00800100  000001a8  2**0
+  2 .bss          00000001  00800100  00800100  000001b2  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  000001a8  2**0
+  3 .comment      00000030  00000000  00000000  000001b2  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000001d8  2**2
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000001e4  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000028  00000000  00000000  00000214  2**0
+  5 .debug_aranges 00000028  00000000  00000000  00000220  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   000008f0  00000000  00000000  0000023c  2**0
+  6 .debug_info   000008f0  00000000  00000000  00000248  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 0000082b  00000000  00000000  00000b2c  2**0
+  7 .debug_abbrev 0000082b  00000000  00000000  00000b38  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000002fa  00000000  00000000  00001357  2**0
+  8 .debug_line   00000300  00000000  00000000  00001363  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000044  00000000  00000000  00001654  2**2
+  9 .debug_frame  00000044  00000000  00000000  00001664  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    0000041f  00000000  00000000  00001698  2**0
+ 10 .debug_str    0000043a  00000000  00000000  000016a8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000084  00000000  00000000  00001ab7  2**0
+ 11 .debug_loc    00000084  00000000  00000000  00001ae2  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000018  00000000  00000000  00001b3b  2**0
+ 12 .debug_ranges 00000018  00000000  00000000  00001b66  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -126,7 +126,7 @@ Disassembly of section .text:
   a4:	b2 07       	cpc	r27, r18
   a6:	e1 f7       	brne	.-8      	; 0xa0 <.do_clear_bss_loop>
   a8:	1e d0       	rcall	.+60     	; 0xe6 <main>
-  aa:	42 c0       	rjmp	.+132    	; 0x130 <_exit>
+  aa:	47 c0       	rjmp	.+142    	; 0x13a <_exit>
 
 000000ac <__bad_interrupt>:
   ac:	a9 cf       	rjmp	.-174    	; 0x0 <__vectors>
@@ -148,18 +148,18 @@ ISR(INT3_vect){
   ba:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__DATA_REGION_ORIGIN__>
   be:	88 23       	and	r24, r24
   c0:	31 f0       	breq	.+12     	; 0xce <__vector_4+0x20>
-		LED&=~(1<<7); // LED OFF
+		LED|=0b10000000; // LED OFF
   c2:	88 b3       	in	r24, 0x18	; 24
-  c4:	8f 77       	andi	r24, 0x7F	; 127
+  c4:	80 68       	ori	r24, 0x80	; 128
   c6:	88 bb       	out	0x18, r24	; 24
 		led_on = 0;
   c8:	10 92 00 01 	sts	0x0100, r1	; 0x800100 <__DATA_REGION_ORIGIN__>
   cc:	06 c0       	rjmp	.+12     	; 0xda <__vector_4+0x2c>
 	}
 	else {
-		LED|=0b10000000; // LED ON
+		LED&=~(1<<7); // LED ON
   ce:	88 b3       	in	r24, 0x18	; 24
-  d0:	80 68       	ori	r24, 0x80	; 128
+  d0:	8f 77       	andi	r24, 0x7F	; 127
   d2:	88 bb       	out	0x18, r24	; 24
 		led_on = 1;
   d4:	81 e0       	ldi	r24, 0x01	; 1
@@ -181,56 +181,62 @@ int main(void){
   e8:	87 bb       	out	0x17, r24	; 23
 	DDRD = 0b00000000; // 입력 설정
   ea:	11 ba       	out	0x11, r1	; 17
+	LED=0b00000111;
+  ec:	87 e0       	ldi	r24, 0x07	; 7
+  ee:	88 bb       	out	0x18, r24	; 24
 	PORTD = 0b00001000; // 풀업저항 설정
-  ec:	88 e0       	ldi	r24, 0x08	; 8
-  ee:	82 bb       	out	0x12, r24	; 18
+  f0:	88 e0       	ldi	r24, 0x08	; 8
+  f2:	82 bb       	out	0x12, r24	; 18
 	EICRA = 0b10000000; //인터럽트 트리거 방식 설정(falling edge)
-  f0:	90 e8       	ldi	r25, 0x80	; 128
-  f2:	90 93 6a 00 	sts	0x006A, r25	; 0x80006a <__TEXT_REGION_LENGTH__+0x7e006a>
+  f4:	90 e8       	ldi	r25, 0x80	; 128
+  f6:	90 93 6a 00 	sts	0x006A, r25	; 0x80006a <__TEXT_REGION_LENGTH__+0x7e006a>
 	EIMSK = 0b00001000; //인터럽트 허용 설정
-  f6:	89 bf       	out	0x39, r24	; 57
+  fa:	89 bf       	out	0x39, r24	; 57
 	SREG |= 0x80; //전체 인트럽트 허가
-  f8:	8f b7       	in	r24, 0x3f	; 63
-  fa:	80 68       	ori	r24, 0x80	; 128
-  fc:	8f bf       	out	0x3f, r24	; 63
+  fc:	8f b7       	in	r24, 0x3f	; 63
+  fe:	80 68       	ori	r24, 0x80	; 128
+ 100:	8f bf       	out	0x3f, r24	; 63
 	led_on = 1;
-  fe:	81 e0       	ldi	r24, 0x01	; 1
- 100:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <__DATA_REGION_ORIGIN__>
+ 102:	81 e0       	ldi	r24, 0x01	; 1
+ 104:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <__DATA_REGION_ORIGIN__>
 	while(1) {
-		LED=0b00000111; // LED ON
- 104:	87 e0       	ldi	r24, 0x07	; 7
- 106:	88 bb       	out	0x18, r24	; 24
+		LED|=0b00000111; // LED ON
+ 108:	88 b3       	in	r24, 0x18	; 24
+ 10a:	87 60       	ori	r24, 0x07	; 7
+ 10c:	88 bb       	out	0x18, r24	; 24
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 108:	2f ef       	ldi	r18, 0xFF	; 255
- 10a:	89 e6       	ldi	r24, 0x69	; 105
- 10c:	98 e1       	ldi	r25, 0x18	; 24
- 10e:	21 50       	subi	r18, 0x01	; 1
- 110:	80 40       	sbci	r24, 0x00	; 0
- 112:	90 40       	sbci	r25, 0x00	; 0
- 114:	e1 f7       	brne	.-8      	; 0x10e <main+0x28>
- 116:	00 c0       	rjmp	.+0      	; 0x118 <main+0x32>
- 118:	00 00       	nop
+ 10e:	2f ef       	ldi	r18, 0xFF	; 255
+ 110:	80 e7       	ldi	r24, 0x70	; 112
+ 112:	92 e0       	ldi	r25, 0x02	; 2
+ 114:	21 50       	subi	r18, 0x01	; 1
+ 116:	80 40       	sbci	r24, 0x00	; 0
+ 118:	90 40       	sbci	r25, 0x00	; 0
+ 11a:	e1 f7       	brne	.-8      	; 0x114 <main+0x2e>
+ 11c:	00 c0       	rjmp	.+0      	; 0x11e <main+0x38>
+ 11e:	00 00       	nop
 		_delay_ms(500);
-		LED=0b00000000; // 모든 LED OFF
- 11a:	18 ba       	out	0x18, r1	; 24
- 11c:	2f ef       	ldi	r18, 0xFF	; 255
- 11e:	89 e6       	ldi	r24, 0x69	; 105
- 120:	98 e1       	ldi	r25, 0x18	; 24
- 122:	21 50       	subi	r18, 0x01	; 1
- 124:	80 40       	sbci	r24, 0x00	; 0
- 126:	90 40       	sbci	r25, 0x00	; 0
- 128:	e1 f7       	brne	.-8      	; 0x122 <main+0x3c>
- 12a:	00 c0       	rjmp	.+0      	; 0x12c <main+0x46>
- 12c:	00 00       	nop
- 12e:	ea cf       	rjmp	.-44     	; 0x104 <main+0x1e>
+		LED&=0b10000000; // 모든 LED OFF
+ 120:	88 b3       	in	r24, 0x18	; 24
+ 122:	80 78       	andi	r24, 0x80	; 128
+ 124:	88 bb       	out	0x18, r24	; 24
+ 126:	2f ef       	ldi	r18, 0xFF	; 255
+ 128:	80 e7       	ldi	r24, 0x70	; 112
+ 12a:	92 e0       	ldi	r25, 0x02	; 2
+ 12c:	21 50       	subi	r18, 0x01	; 1
+ 12e:	80 40       	sbci	r24, 0x00	; 0
+ 130:	90 40       	sbci	r25, 0x00	; 0
+ 132:	e1 f7       	brne	.-8      	; 0x12c <main+0x46>
+ 134:	00 c0       	rjmp	.+0      	; 0x136 <main+0x50>
+ 136:	00 00       	nop
+ 138:	e7 cf       	rjmp	.-50     	; 0x108 <main+0x22>
 
-00000130 <_exit>:
- 130:	f8 94       	cli
+0000013a <_exit>:
+ 13a:	f8 94       	cli
 
-00000132 <__stop_program>:
- 132:	ff cf       	rjmp	.-2      	; 0x132 <__stop_program>
+0000013c <__stop_program>:
+ 13c:	ff cf       	rjmp	.-2      	; 0x13c <__stop_program>
