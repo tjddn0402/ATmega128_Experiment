@@ -1,5 +1,6 @@
 # ATmega128_Experiment
 
-2021-2 ATmega128 Projects
+2021-2 ATmega128 Projects in Inha University
 
-@ AVR studio 7
+IDE : AVR studio 7
+Compiler : WinAVR
