@@ -1,9 +1,3 @@
-/*
- * week5-1.c
- *
- * Created: 2021-09-24 오후 5:07:40
- * Author : KSW
- */ 
 #define F_CPU 16000000UL
 #include<avr/io.h>
 #include<util/delay.h>
@@ -12,8 +6,8 @@
 #define LED PORTA
 
 
-unsigned char led_on;
-unsigned char period;
+volatile unsigned char led_on;
+volatile unsigned char period;
 
 void wait();
 
@@ -30,7 +24,7 @@ ISR(INT7_vect){
 
 int main(void){
 	unsigned char pos;
-	period=5;
+	period=1;
 	
 	DDRA = 0b11111111; // 출력 설정
 	
@@ -38,19 +32,25 @@ int main(void){
 	PORTE = 0b11100000; // 풀업저항 설정
 	
 	EICRB = 0b10101000; //인터럽트 트리거 방식 설정(falling edge)
-	EIMSK = 0b00001000; //인터럽트 허용 설정
+	EIMSK = 0b11100000; //인터럽트 허용 설정
 	SREG |= 0x80; //전체 인트럽트 허가
 	led_on = 1;
 	
 	while(1) {
-		if(led_on==1)		{
-			for (pos=0x01;pos<=0x80;pos<<=pos){
-				if(led_on==0){break;}
+		if(led_on==1){
+			for (pos=0xfe;pos!=0x7f;pos=((pos<<1)|0x01)){
+				if(led_on==0){
+					LED=0XFF;
+					break;
+				}
 				wait();
 				LED=pos;
 			}
-			for (pos=0x80;pos>=0x01;pos>>=pos){
-				if(led_on==0){break;}
+			for (;pos!=0xfe;pos=((pos>>1)|0x80)){
+				if(led_on==0){
+					LED=0XFF;
+					break;
+				}
 				wait();
 				LED=pos;
 			}
@@ -64,4 +64,3 @@ void wait(){
 		_delay_ms(100);
 	}
 }
-
