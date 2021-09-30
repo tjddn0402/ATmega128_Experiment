@@ -5,18 +5,17 @@
 
 #define LED PORTA
 
-
 volatile unsigned char led_on;
 volatile unsigned char period;
 
-void wait();
+void wait();//_delay_ms 함수는 변수 파라미터를 못받으므로 wait으로 속도 조절
 
-ISR(INT5_vect){	period++;}
-ISR(INT6_vect){
+ISR(INT5_vect){	period++;}// 3번 스위치 : period up -> speed down
+ISR(INT6_vect){//2번 스위치 : period down -> speed up
 	if(period>1)
-	period--;
+		period--;
 }
-ISR(INT7_vect){
+ISR(INT7_vect){// 1번 스위치 누르면 on/off
 	if (led_on) {
 		led_on = 0;
 	}
@@ -61,7 +60,7 @@ int main(void){
 	}
 }
 
-void wait(){
+void wait(){//period 값 통해 속도 조절
 	unsigned char i;
 	for(i=0;i<period;i++){
 		_delay_ms(100);
