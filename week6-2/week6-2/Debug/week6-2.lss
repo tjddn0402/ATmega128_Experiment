@@ -3,31 +3,31 @@ week6-2.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000020  00800100  0000033c  000003d0  2**0
+  0 .data         00000020  00800100  00000342  000003d6  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         0000033c  00000000  00000000  00000094  2**1
+  1 .text         00000342  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000003  00800120  00800120  000003f0  2**0
+  2 .bss          00000003  00800120  00800120  000003f6  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  000003f0  2**0
+  3 .comment      00000030  00000000  00000000  000003f6  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000420  2**2
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000428  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000060  00000000  00000000  0000045c  2**0
+  5 .debug_aranges 00000060  00000000  00000000  00000464  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000b7d  00000000  00000000  000004bc  2**0
+  6 .debug_info   00000b7d  00000000  00000000  000004c4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000008f2  00000000  00000000  00001039  2**0
+  7 .debug_abbrev 000008f2  00000000  00000000  00001041  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000483  00000000  00000000  0000192b  2**0
+  8 .debug_line   00000491  00000000  00000000  00001933  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000164  00000000  00000000  00001db0  2**2
+  9 .debug_frame  00000164  00000000  00000000  00001dc4  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    0000048a  00000000  00000000  00001f14  2**0
+ 10 .debug_str    0000048a  00000000  00000000  00001f28  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000003b1  00000000  00000000  0000239e  2**0
+ 11 .debug_loc    000003b1  00000000  00000000  000023b2  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000050  00000000  00000000  0000274f  2**0
+ 12 .debug_ranges 00000050  00000000  00000000  00002763  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -53,7 +53,7 @@ Disassembly of section .text:
   22:	00 00       	nop
   24:	50 c0       	rjmp	.+160    	; 0xc6 <__bad_interrupt>
   26:	00 00       	nop
-  28:	46 c1       	rjmp	.+652    	; 0x2b6 <__vector_10>
+  28:	48 c1       	rjmp	.+656    	; 0x2ba <__vector_10>
   2a:	00 00       	nop
   2c:	4c c0       	rjmp	.+152    	; 0xc6 <__bad_interrupt>
   2e:	00 00       	nop
@@ -116,7 +116,7 @@ Disassembly of section .text:
   98:	11 e0       	ldi	r17, 0x01	; 1
   9a:	a0 e0       	ldi	r26, 0x00	; 0
   9c:	b1 e0       	ldi	r27, 0x01	; 1
-  9e:	ec e3       	ldi	r30, 0x3C	; 60
+  9e:	e2 e4       	ldi	r30, 0x42	; 66
   a0:	f3 e0       	ldi	r31, 0x03	; 3
   a2:	00 e0       	ldi	r16, 0x00	; 0
   a4:	0b bf       	out	0x3b, r16	; 59
@@ -140,15 +140,15 @@ Disassembly of section .text:
   bc:	a3 32       	cpi	r26, 0x23	; 35
   be:	b2 07       	cpc	r27, r18
   c0:	e1 f7       	brne	.-8      	; 0xba <.do_clear_bss_loop>
-  c2:	89 d0       	rcall	.+274    	; 0x1d6 <main>
-  c4:	39 c1       	rjmp	.+626    	; 0x338 <_exit>
+  c2:	8b d0       	rcall	.+278    	; 0x1da <main>
+  c4:	3c c1       	rjmp	.+632    	; 0x33e <_exit>
 
 000000c6 <__bad_interrupt>:
   c6:	9c cf       	rjmp	.-200    	; 0x0 <__vectors>
 
 000000c8 <__vector_1>:
-		display(str[1],2);
-		count = 0;
+			count = 0;
+		}
 	}
 }
 
@@ -270,27 +270,16 @@ void display(volatile char *str,unsigned char line)
  150:	d6 df       	rcall	.-84     	; 0xfe <cmd>
  152:	f9 cf       	rjmp	.-14     	; 0x146 <display+0x14>
 	int i = 0;
-	while (str[i] != '\0')
-	{
-		data(str[i++]);
+	while (str[i] != '\0'){data(str[i++]);}
  154:	21 96       	adiw	r28, 0x01	; 1
  156:	80 81       	ld	r24, Z
  158:	df df       	rcall	.-66     	; 0x118 <data>
-void display(volatile char *str,unsigned char line)
-{	// print selected line on LCD
-	if(line==1){cmd(0b10000000);}	//select 1st line
-	else{cmd(0b11000000);}			//select 2nd line
-	int i = 0;
-	while (str[i] != '\0')
  15a:	f8 01       	movw	r30, r16
  15c:	ec 0f       	add	r30, r28
  15e:	fd 1f       	adc	r31, r29
  160:	80 81       	ld	r24, Z
  162:	81 11       	cpse	r24, r1
  164:	f7 cf       	rjmp	.-18     	; 0x154 <display+0x22>
-	{
-		data(str[i++]);
-	}
 }
  166:	df 91       	pop	r29
  168:	cf 91       	pop	r28
@@ -339,254 +328,260 @@ ISR(INT2_vect){//initialize
  1aa:	80 e1       	ldi	r24, 0x10	; 16
  1ac:	91 e0       	ldi	r25, 0x01	; 1
  1ae:	c1 df       	rcall	.-126    	; 0x132 <display>
+	goStop=0;
+ 1b0:	10 92 20 01 	sts	0x0120, r1	; 0x800120 <__data_end>
 }
- 1b0:	ff 91       	pop	r31
- 1b2:	ef 91       	pop	r30
- 1b4:	bf 91       	pop	r27
- 1b6:	af 91       	pop	r26
- 1b8:	9f 91       	pop	r25
- 1ba:	8f 91       	pop	r24
- 1bc:	7f 91       	pop	r23
- 1be:	6f 91       	pop	r22
- 1c0:	5f 91       	pop	r21
- 1c2:	4f 91       	pop	r20
- 1c4:	3f 91       	pop	r19
- 1c6:	2f 91       	pop	r18
- 1c8:	0f 90       	pop	r0
- 1ca:	0b be       	out	0x3b, r0	; 59
+ 1b4:	ff 91       	pop	r31
+ 1b6:	ef 91       	pop	r30
+ 1b8:	bf 91       	pop	r27
+ 1ba:	af 91       	pop	r26
+ 1bc:	9f 91       	pop	r25
+ 1be:	8f 91       	pop	r24
+ 1c0:	7f 91       	pop	r23
+ 1c2:	6f 91       	pop	r22
+ 1c4:	5f 91       	pop	r21
+ 1c6:	4f 91       	pop	r20
+ 1c8:	3f 91       	pop	r19
+ 1ca:	2f 91       	pop	r18
  1cc:	0f 90       	pop	r0
- 1ce:	0f be       	out	0x3f, r0	; 63
+ 1ce:	0b be       	out	0x3b, r0	; 59
  1d0:	0f 90       	pop	r0
- 1d2:	1f 90       	pop	r1
- 1d4:	18 95       	reti
+ 1d2:	0f be       	out	0x3f, r0	; 63
+ 1d4:	0f 90       	pop	r0
+ 1d6:	1f 90       	pop	r1
+ 1d8:	18 95       	reti
 
-000001d6 <main>:
+000001da <main>:
 
 int main(void)
 {
     DDRA=0xff;
- 1d6:	8f ef       	ldi	r24, 0xFF	; 255
- 1d8:	8a bb       	out	0x1a, r24	; 26
+ 1da:	8f ef       	ldi	r24, 0xFF	; 255
+ 1dc:	8a bb       	out	0x1a, r24	; 26
 	DDRB=0xff;
- 1da:	87 bb       	out	0x17, r24	; 23
+ 1de:	87 bb       	out	0x17, r24	; 23
 	DDRD=0x00;
- 1dc:	11 ba       	out	0x11, r1	; 17
+ 1e0:	11 ba       	out	0x11, r1	; 17
 	
-	SWITCH=0b00000111;//풀업저항 사용
- 1de:	87 e0       	ldi	r24, 0x07	; 7
- 1e0:	82 bb       	out	0x12, r24	; 18
-	EICRA=0b00101010;// falling edge trigger
- 1e2:	9a e2       	ldi	r25, 0x2A	; 42
- 1e4:	90 93 6a 00 	sts	0x006A, r25	; 0x80006a <__TEXT_REGION_LENGTH__+0x7e006a>
+	SWITCH=0b00000000;//풀업저항 미사용
+ 1e2:	12 ba       	out	0x12, r1	; 18
+	EICRA=0b00111111;// rising edge trigger
+ 1e4:	8f e3       	ldi	r24, 0x3F	; 63
+ 1e6:	80 93 6a 00 	sts	0x006A, r24	; 0x80006a <__TEXT_REGION_LENGTH__+0x7e006a>
 	EIMSK=0b00000111;// 외부인터럽트 허용
- 1e8:	89 bf       	out	0x39, r24	; 57
+ 1ea:	87 e0       	ldi	r24, 0x07	; 7
+ 1ec:	89 bf       	out	0x39, r24	; 57
 	
 	TCCR2 = 0b00000101; //프리스케일러 분주비 1024
- 1ea:	85 e0       	ldi	r24, 0x05	; 5
- 1ec:	85 bd       	out	0x25, r24	; 37
+ 1ee:	85 e0       	ldi	r24, 0x05	; 5
+ 1f0:	85 bd       	out	0x25, r24	; 37
 	TIMSK = 0b01000000; //오버플로우 인터럽트 허용
- 1ee:	80 e4       	ldi	r24, 0x40	; 64
- 1f0:	87 bf       	out	0x37, r24	; 55
+ 1f2:	80 e4       	ldi	r24, 0x40	; 64
+ 1f4:	87 bf       	out	0x37, r24	; 55
 	TCNT2 = 0x00;		//타이머카운터0 초기화
- 1f2:	14 bc       	out	0x24, r1	; 36
+ 1f6:	14 bc       	out	0x24, r1	; 36
 	
 	SREG = 0x80;		//전체 인터럽트 허가
- 1f4:	80 e8       	ldi	r24, 0x80	; 128
- 1f6:	8f bf       	out	0x3f, r24	; 63
+ 1f8:	80 e8       	ldi	r24, 0x80	; 128
+ 1fa:	8f bf       	out	0x3f, r24	; 63
 	
 	cmd(0b00110000); // Function Set. Set 8bit 1Line 5x7 dots
- 1f8:	80 e3       	ldi	r24, 0x30	; 48
- 1fa:	90 e0       	ldi	r25, 0x00	; 0
- 1fc:	80 df       	rcall	.-256    	; 0xfe <cmd>
+ 1fc:	80 e3       	ldi	r24, 0x30	; 48
+ 1fe:	90 e0       	ldi	r25, 0x00	; 0
+ 200:	7e df       	rcall	.-260    	; 0xfe <cmd>
 	cmd(0b00000001); // Display clear.
- 1fe:	81 e0       	ldi	r24, 0x01	; 1
- 200:	90 e0       	ldi	r25, 0x00	; 0
- 202:	7d df       	rcall	.-262    	; 0xfe <cmd>
+ 202:	81 e0       	ldi	r24, 0x01	; 1
+ 204:	90 e0       	ldi	r25, 0x00	; 0
+ 206:	7b df       	rcall	.-266    	; 0xfe <cmd>
 	cmd(0b10000000); // Set DDRAM address or cursor position on display
- 204:	80 e8       	ldi	r24, 0x80	; 128
- 206:	90 e0       	ldi	r25, 0x00	; 0
- 208:	7a df       	rcall	.-268    	; 0xfe <cmd>
+ 208:	80 e8       	ldi	r24, 0x80	; 128
+ 20a:	90 e0       	ldi	r25, 0x00	; 0
+ 20c:	78 df       	rcall	.-272    	; 0xfe <cmd>
 	cmd(0b00001100); // Display on. Cursor Off. Blink Off
- 20a:	8c e0       	ldi	r24, 0x0C	; 12
- 20c:	90 e0       	ldi	r25, 0x00	; 0
- 20e:	77 df       	rcall	.-274    	; 0xfe <cmd>
+ 20e:	8c e0       	ldi	r24, 0x0C	; 12
+ 210:	90 e0       	ldi	r25, 0x00	; 0
+ 212:	75 df       	rcall	.-278    	; 0xfe <cmd>
 	cmd(0b00000110); // Entry Mode. Cursor Increment
- 210:	86 e0       	ldi	r24, 0x06	; 6
- 212:	90 e0       	ldi	r25, 0x00	; 0
- 214:	74 df       	rcall	.-280    	; 0xfe <cmd>
+ 214:	86 e0       	ldi	r24, 0x06	; 6
+ 216:	90 e0       	ldi	r25, 0x00	; 0
+ 218:	72 df       	rcall	.-284    	; 0xfe <cmd>
+	
 	display(str[0],1);
- 216:	61 e0       	ldi	r22, 0x01	; 1
- 218:	80 e0       	ldi	r24, 0x00	; 0
- 21a:	91 e0       	ldi	r25, 0x01	; 1
- 21c:	8a df       	rcall	.-236    	; 0x132 <display>
+ 21a:	61 e0       	ldi	r22, 0x01	; 1
+ 21c:	80 e0       	ldi	r24, 0x00	; 0
+ 21e:	91 e0       	ldi	r25, 0x01	; 1
+ 220:	88 df       	rcall	.-240    	; 0x132 <display>
 	display(str[1],2);
- 21e:	62 e0       	ldi	r22, 0x02	; 2
- 220:	80 e1       	ldi	r24, 0x10	; 16
- 222:	91 e0       	ldi	r25, 0x01	; 1
- 224:	86 df       	rcall	.-244    	; 0x132 <display>
- 226:	ff cf       	rjmp	.-2      	; 0x226 <main+0x50>
+ 222:	62 e0       	ldi	r22, 0x02	; 2
+ 224:	80 e1       	ldi	r24, 0x10	; 16
+ 226:	91 e0       	ldi	r25, 0x01	; 1
+ 228:	84 df       	rcall	.-248    	; 0x132 <display>
+ 22a:	ff cf       	rjmp	.-2      	; 0x22a <main+0x50>
 
-00000228 <tick>:
- 228:	80 91 17 01 	lds	r24, 0x0117	; 0x800117 <__DATA_REGION_ORIGIN__+0x17>
-		data(str[i++]);
-	}
+0000022c <tick>:
+ 22c:	80 91 17 01 	lds	r24, 0x0117	; 0x800117 <__DATA_REGION_ORIGIN__+0x17>
+	int i = 0;
+	while (str[i] != '\0'){data(str[i++]);}
 }
 
 void tick(){
 	if (str[1][7]=='9'){str[1][7]='0';
- 22c:	89 33       	cpi	r24, 0x39	; 57
- 22e:	e9 f5       	brne	.+122    	; 0x2aa <tick+0x82>
- 230:	e0 e0       	ldi	r30, 0x00	; 0
- 232:	f1 e0       	ldi	r31, 0x01	; 1
- 234:	80 e3       	ldi	r24, 0x30	; 48
- 236:	87 8b       	std	Z+23, r24	; 0x17
+ 230:	89 33       	cpi	r24, 0x39	; 57
+ 232:	e9 f5       	brne	.+122    	; 0x2ae <tick+0x82>
+ 234:	e0 e0       	ldi	r30, 0x00	; 0
+ 236:	f1 e0       	ldi	r31, 0x01	; 1
+ 238:	80 e3       	ldi	r24, 0x30	; 48
+ 23a:	87 8b       	std	Z+23, r24	; 0x17
 		if(str[1][6]=='5'){str[1][6]='0';
- 238:	86 89       	ldd	r24, Z+22	; 0x16
- 23a:	85 33       	cpi	r24, 0x35	; 53
- 23c:	81 f5       	brne	.+96     	; 0x29e <tick+0x76>
- 23e:	80 e3       	ldi	r24, 0x30	; 48
- 240:	86 8b       	std	Z+22, r24	; 0x16
+ 23c:	86 89       	ldd	r24, Z+22	; 0x16
+ 23e:	85 33       	cpi	r24, 0x35	; 53
+ 240:	81 f5       	brne	.+96     	; 0x2a2 <tick+0x76>
+ 242:	80 e3       	ldi	r24, 0x30	; 48
+ 244:	86 8b       	std	Z+22, r24	; 0x16
 			if(str[1][4]=='9'){str[1][4]='0';
- 242:	84 89       	ldd	r24, Z+20	; 0x14
- 244:	89 33       	cpi	r24, 0x39	; 57
- 246:	29 f5       	brne	.+74     	; 0x292 <tick+0x6a>
- 248:	80 e3       	ldi	r24, 0x30	; 48
- 24a:	84 8b       	std	Z+20, r24	; 0x14
+ 246:	84 89       	ldd	r24, Z+20	; 0x14
+ 248:	89 33       	cpi	r24, 0x39	; 57
+ 24a:	29 f5       	brne	.+74     	; 0x296 <tick+0x6a>
+ 24c:	80 e3       	ldi	r24, 0x30	; 48
+ 24e:	84 8b       	std	Z+20, r24	; 0x14
 				if(str[1][3]=='5'){str[1][3]='0';
- 24c:	83 89       	ldd	r24, Z+19	; 0x13
- 24e:	85 33       	cpi	r24, 0x35	; 53
- 250:	d1 f4       	brne	.+52     	; 0x286 <tick+0x5e>
- 252:	80 e3       	ldi	r24, 0x30	; 48
- 254:	83 8b       	std	Z+19, r24	; 0x13
+ 250:	83 89       	ldd	r24, Z+19	; 0x13
+ 252:	85 33       	cpi	r24, 0x35	; 53
+ 254:	d1 f4       	brne	.+52     	; 0x28a <tick+0x5e>
+ 256:	80 e3       	ldi	r24, 0x30	; 48
+ 258:	83 8b       	std	Z+19, r24	; 0x13
 					if(str[1][1]=='9'){	str[1][1]='0';
- 256:	81 89       	ldd	r24, Z+17	; 0x11
- 258:	89 33       	cpi	r24, 0x39	; 57
- 25a:	79 f4       	brne	.+30     	; 0x27a <tick+0x52>
- 25c:	80 e3       	ldi	r24, 0x30	; 48
- 25e:	81 8b       	std	Z+17, r24	; 0x11
+ 25a:	81 89       	ldd	r24, Z+17	; 0x11
+ 25c:	89 33       	cpi	r24, 0x39	; 57
+ 25e:	79 f4       	brne	.+30     	; 0x27e <tick+0x52>
+ 260:	80 e3       	ldi	r24, 0x30	; 48
+ 262:	81 8b       	std	Z+17, r24	; 0x11
 						if(str[1][0]=='9'){str[1][0]='0';}
- 260:	80 89       	ldd	r24, Z+16	; 0x10
- 262:	89 33       	cpi	r24, 0x39	; 57
- 264:	21 f4       	brne	.+8      	; 0x26e <tick+0x46>
- 266:	80 e3       	ldi	r24, 0x30	; 48
- 268:	80 93 10 01 	sts	0x0110, r24	; 0x800110 <__DATA_REGION_ORIGIN__+0x10>
- 26c:	08 95       	ret
+ 264:	80 89       	ldd	r24, Z+16	; 0x10
+ 266:	89 33       	cpi	r24, 0x39	; 57
+ 268:	21 f4       	brne	.+8      	; 0x272 <tick+0x46>
+ 26a:	80 e3       	ldi	r24, 0x30	; 48
+ 26c:	80 93 10 01 	sts	0x0110, r24	; 0x800110 <__DATA_REGION_ORIGIN__+0x10>
+ 270:	08 95       	ret
 						else{str[1][0]++;}
- 26e:	e0 e0       	ldi	r30, 0x00	; 0
- 270:	f1 e0       	ldi	r31, 0x01	; 1
- 272:	80 89       	ldd	r24, Z+16	; 0x10
- 274:	8f 5f       	subi	r24, 0xFF	; 255
- 276:	80 8b       	std	Z+16, r24	; 0x10
- 278:	08 95       	ret
+ 272:	e0 e0       	ldi	r30, 0x00	; 0
+ 274:	f1 e0       	ldi	r31, 0x01	; 1
+ 276:	80 89       	ldd	r24, Z+16	; 0x10
+ 278:	8f 5f       	subi	r24, 0xFF	; 255
+ 27a:	80 8b       	std	Z+16, r24	; 0x10
+ 27c:	08 95       	ret
 					}else{str[1][1]++;}
- 27a:	e0 e0       	ldi	r30, 0x00	; 0
- 27c:	f1 e0       	ldi	r31, 0x01	; 1
- 27e:	81 89       	ldd	r24, Z+17	; 0x11
- 280:	8f 5f       	subi	r24, 0xFF	; 255
- 282:	81 8b       	std	Z+17, r24	; 0x11
- 284:	08 95       	ret
+ 27e:	e0 e0       	ldi	r30, 0x00	; 0
+ 280:	f1 e0       	ldi	r31, 0x01	; 1
+ 282:	81 89       	ldd	r24, Z+17	; 0x11
+ 284:	8f 5f       	subi	r24, 0xFF	; 255
+ 286:	81 8b       	std	Z+17, r24	; 0x11
+ 288:	08 95       	ret
 				}else{str[1][3]++;}
- 286:	e0 e0       	ldi	r30, 0x00	; 0
- 288:	f1 e0       	ldi	r31, 0x01	; 1
- 28a:	83 89       	ldd	r24, Z+19	; 0x13
- 28c:	8f 5f       	subi	r24, 0xFF	; 255
- 28e:	83 8b       	std	Z+19, r24	; 0x13
- 290:	08 95       	ret
+ 28a:	e0 e0       	ldi	r30, 0x00	; 0
+ 28c:	f1 e0       	ldi	r31, 0x01	; 1
+ 28e:	83 89       	ldd	r24, Z+19	; 0x13
+ 290:	8f 5f       	subi	r24, 0xFF	; 255
+ 292:	83 8b       	std	Z+19, r24	; 0x13
+ 294:	08 95       	ret
 			}else{str[1][4]++;}
- 292:	e0 e0       	ldi	r30, 0x00	; 0
- 294:	f1 e0       	ldi	r31, 0x01	; 1
- 296:	84 89       	ldd	r24, Z+20	; 0x14
- 298:	8f 5f       	subi	r24, 0xFF	; 255
- 29a:	84 8b       	std	Z+20, r24	; 0x14
- 29c:	08 95       	ret
+ 296:	e0 e0       	ldi	r30, 0x00	; 0
+ 298:	f1 e0       	ldi	r31, 0x01	; 1
+ 29a:	84 89       	ldd	r24, Z+20	; 0x14
+ 29c:	8f 5f       	subi	r24, 0xFF	; 255
+ 29e:	84 8b       	std	Z+20, r24	; 0x14
+ 2a0:	08 95       	ret
 		}else{str[1][6]++;}
- 29e:	e0 e0       	ldi	r30, 0x00	; 0
- 2a0:	f1 e0       	ldi	r31, 0x01	; 1
- 2a2:	86 89       	ldd	r24, Z+22	; 0x16
- 2a4:	8f 5f       	subi	r24, 0xFF	; 255
- 2a6:	86 8b       	std	Z+22, r24	; 0x16
- 2a8:	08 95       	ret
+ 2a2:	e0 e0       	ldi	r30, 0x00	; 0
+ 2a4:	f1 e0       	ldi	r31, 0x01	; 1
+ 2a6:	86 89       	ldd	r24, Z+22	; 0x16
+ 2a8:	8f 5f       	subi	r24, 0xFF	; 255
+ 2aa:	86 8b       	std	Z+22, r24	; 0x16
+ 2ac:	08 95       	ret
 	}else{str[1][7]++;}
- 2aa:	e0 e0       	ldi	r30, 0x00	; 0
- 2ac:	f1 e0       	ldi	r31, 0x01	; 1
- 2ae:	87 89       	ldd	r24, Z+23	; 0x17
- 2b0:	8f 5f       	subi	r24, 0xFF	; 255
- 2b2:	87 8b       	std	Z+23, r24	; 0x17
- 2b4:	08 95       	ret
+ 2ae:	e0 e0       	ldi	r30, 0x00	; 0
+ 2b0:	f1 e0       	ldi	r31, 0x01	; 1
+ 2b2:	87 89       	ldd	r24, Z+23	; 0x17
+ 2b4:	8f 5f       	subi	r24, 0xFF	; 255
+ 2b6:	87 8b       	std	Z+23, r24	; 0x17
+ 2b8:	08 95       	ret
 
-000002b6 <__vector_10>:
+000002ba <__vector_10>:
 volatile char str[2][16]={{"Stop Watch"},{"00:00:00"}};
-void tick();// manipulate str to increase time on LCD
+void tick();// manipulate str[1] to increase time on LCD
 volatile unsigned char goStop=0;//1:count time // 0:stop
 	
 ISR(TIMER2_OVF_vect)
 {
- 2b6:	1f 92       	push	r1
- 2b8:	0f 92       	push	r0
- 2ba:	0f b6       	in	r0, 0x3f	; 63
+ 2ba:	1f 92       	push	r1
  2bc:	0f 92       	push	r0
- 2be:	11 24       	eor	r1, r1
- 2c0:	0b b6       	in	r0, 0x3b	; 59
- 2c2:	0f 92       	push	r0
- 2c4:	2f 93       	push	r18
- 2c6:	3f 93       	push	r19
- 2c8:	4f 93       	push	r20
- 2ca:	5f 93       	push	r21
- 2cc:	6f 93       	push	r22
- 2ce:	7f 93       	push	r23
- 2d0:	8f 93       	push	r24
- 2d2:	9f 93       	push	r25
- 2d4:	af 93       	push	r26
- 2d6:	bf 93       	push	r27
- 2d8:	ef 93       	push	r30
- 2da:	ff 93       	push	r31
-	count++;
- 2dc:	80 91 21 01 	lds	r24, 0x0121	; 0x800121 <count>
- 2e0:	90 91 22 01 	lds	r25, 0x0122	; 0x800122 <count+0x1>
- 2e4:	01 96       	adiw	r24, 0x01	; 1
- 2e6:	90 93 22 01 	sts	0x0122, r25	; 0x800122 <count+0x1>
- 2ea:	80 93 21 01 	sts	0x0121, r24	; 0x800121 <count>
-	if (count == 60){
- 2ee:	80 91 21 01 	lds	r24, 0x0121	; 0x800121 <count>
- 2f2:	90 91 22 01 	lds	r25, 0x0122	; 0x800122 <count+0x1>
- 2f6:	cc 97       	sbiw	r24, 0x3c	; 60
- 2f8:	61 f4       	brne	.+24     	; 0x312 <__vector_10+0x5c>
-		if(goStop){tick();}
- 2fa:	80 91 20 01 	lds	r24, 0x0120	; 0x800120 <__data_end>
- 2fe:	81 11       	cpse	r24, r1
- 300:	93 df       	rcall	.-218    	; 0x228 <tick>
-		display(str[1],2);
- 302:	62 e0       	ldi	r22, 0x02	; 2
- 304:	80 e1       	ldi	r24, 0x10	; 16
- 306:	91 e0       	ldi	r25, 0x01	; 1
- 308:	14 df       	rcall	.-472    	; 0x132 <display>
-		count = 0;
- 30a:	10 92 22 01 	sts	0x0122, r1	; 0x800122 <count+0x1>
- 30e:	10 92 21 01 	sts	0x0121, r1	; 0x800121 <count>
+ 2be:	0f b6       	in	r0, 0x3f	; 63
+ 2c0:	0f 92       	push	r0
+ 2c2:	11 24       	eor	r1, r1
+ 2c4:	0b b6       	in	r0, 0x3b	; 59
+ 2c6:	0f 92       	push	r0
+ 2c8:	2f 93       	push	r18
+ 2ca:	3f 93       	push	r19
+ 2cc:	4f 93       	push	r20
+ 2ce:	5f 93       	push	r21
+ 2d0:	6f 93       	push	r22
+ 2d2:	7f 93       	push	r23
+ 2d4:	8f 93       	push	r24
+ 2d6:	9f 93       	push	r25
+ 2d8:	af 93       	push	r26
+ 2da:	bf 93       	push	r27
+ 2dc:	ef 93       	push	r30
+ 2de:	ff 93       	push	r31
+	if(goStop){
+ 2e0:	80 91 20 01 	lds	r24, 0x0120	; 0x800120 <__data_end>
+ 2e4:	88 23       	and	r24, r24
+ 2e6:	c1 f0       	breq	.+48     	; 0x318 <__vector_10+0x5e>
+		count++;
+ 2e8:	80 91 21 01 	lds	r24, 0x0121	; 0x800121 <count>
+ 2ec:	90 91 22 01 	lds	r25, 0x0122	; 0x800122 <count+0x1>
+ 2f0:	01 96       	adiw	r24, 0x01	; 1
+ 2f2:	90 93 22 01 	sts	0x0122, r25	; 0x800122 <count+0x1>
+ 2f6:	80 93 21 01 	sts	0x0121, r24	; 0x800121 <count>
+		if (count == 60){
+ 2fa:	80 91 21 01 	lds	r24, 0x0121	; 0x800121 <count>
+ 2fe:	90 91 22 01 	lds	r25, 0x0122	; 0x800122 <count+0x1>
+ 302:	cc 97       	sbiw	r24, 0x3c	; 60
+ 304:	49 f4       	brne	.+18     	; 0x318 <__vector_10+0x5e>
+			tick();
+ 306:	92 df       	rcall	.-220    	; 0x22c <tick>
+			display(str[1],2);
+ 308:	62 e0       	ldi	r22, 0x02	; 2
+ 30a:	80 e1       	ldi	r24, 0x10	; 16
+ 30c:	91 e0       	ldi	r25, 0x01	; 1
+ 30e:	11 df       	rcall	.-478    	; 0x132 <display>
+			count = 0;
+ 310:	10 92 22 01 	sts	0x0122, r1	; 0x800122 <count+0x1>
+ 314:	10 92 21 01 	sts	0x0121, r1	; 0x800121 <count>
+		}
 	}
 }
- 312:	ff 91       	pop	r31
- 314:	ef 91       	pop	r30
- 316:	bf 91       	pop	r27
- 318:	af 91       	pop	r26
- 31a:	9f 91       	pop	r25
- 31c:	8f 91       	pop	r24
- 31e:	7f 91       	pop	r23
- 320:	6f 91       	pop	r22
- 322:	5f 91       	pop	r21
- 324:	4f 91       	pop	r20
- 326:	3f 91       	pop	r19
- 328:	2f 91       	pop	r18
- 32a:	0f 90       	pop	r0
- 32c:	0b be       	out	0x3b, r0	; 59
- 32e:	0f 90       	pop	r0
- 330:	0f be       	out	0x3f, r0	; 63
- 332:	0f 90       	pop	r0
- 334:	1f 90       	pop	r1
- 336:	18 95       	reti
+ 318:	ff 91       	pop	r31
+ 31a:	ef 91       	pop	r30
+ 31c:	bf 91       	pop	r27
+ 31e:	af 91       	pop	r26
+ 320:	9f 91       	pop	r25
+ 322:	8f 91       	pop	r24
+ 324:	7f 91       	pop	r23
+ 326:	6f 91       	pop	r22
+ 328:	5f 91       	pop	r21
+ 32a:	4f 91       	pop	r20
+ 32c:	3f 91       	pop	r19
+ 32e:	2f 91       	pop	r18
+ 330:	0f 90       	pop	r0
+ 332:	0b be       	out	0x3b, r0	; 59
+ 334:	0f 90       	pop	r0
+ 336:	0f be       	out	0x3f, r0	; 63
+ 338:	0f 90       	pop	r0
+ 33a:	1f 90       	pop	r1
+ 33c:	18 95       	reti
 
-00000338 <_exit>:
- 338:	f8 94       	cli
+0000033e <_exit>:
+ 33e:	f8 94       	cli
 
-0000033a <__stop_program>:
- 33a:	ff cf       	rjmp	.-2      	; 0x33a <__stop_program>
+00000340 <__stop_program>:
+ 340:	ff cf       	rjmp	.-2      	; 0x340 <__stop_program>

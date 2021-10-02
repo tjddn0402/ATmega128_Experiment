@@ -14,30 +14,30 @@
 void cmd(int command);
 void data(char str);
 void display(volatile char *str,unsigned char line);
+
 volatile unsigned int count = 0;
 volatile char str[2][16]={{"Stop Watch"},{"00:00:00"}};
-void tick();// manipulate str to increase time on LCD
+void tick();// manipulate str[1] to increase time on LCD
 volatile unsigned char goStop=0;//1:count time // 0:stop
 	
 ISR(TIMER2_OVF_vect)
 {
-	count++;
-	if (count == 60){
-		if(goStop){tick();}
-		display(str[1],2);
-		count = 0;
+	if(goStop){
+		count++;
+		if (count == 60){
+			tick();
+			display(str[1],2);
+			count = 0;
+		}
 	}
 }
 
-ISR(INT0_vect){//start
-	goStop=1;
-}
-ISR(INT1_vect){//stop
-	goStop=0;
-}
+ISR(INT0_vect){goStop=1;}//start
+ISR(INT1_vect){goStop=0;}//stop
 ISR(INT2_vect){//initialize
 	str[1][0]=str[1][1]=str[1][3]=str[1][4]=str[1][6]=str[1][7]='0';
 	display(str[1],2);
+	goStop=0;
 }
 
 int main(void)
@@ -56,13 +56,15 @@ int main(void)
 	
 	SREG = 0x80;		//전체 인터럽트 허가
 	
-	cmd(0b00110000); // Function Set. Set 8bit 1Line 5x7 dots
+	cmd(0b00111000); // Function Set. Set 8bit 1Line 5x7 dots
 	cmd(0b00000001); // Display clear.
 	cmd(0b10000000); // Set DDRAM address or cursor position on display
 	cmd(0b00001100); // Display on. Cursor Off. Blink Off
 	cmd(0b00000110); // Entry Mode. Cursor Increment
+	
 	display(str[0],1);
 	display(str[1],2);
+	
 	while (1) 
     {
     }
@@ -88,10 +90,7 @@ void display(volatile char *str,unsigned char line)
 	if(line==1){cmd(0b10000000);}	//select 1st line
 	else{cmd(0b11000000);}			//select 2nd line
 	int i = 0;
-	while (str[i] != '\0')
-	{
-		data(str[i++]);
-	}
+	while (str[i] != '\0'){data(str[i++]);}
 }
 
 void tick(){
