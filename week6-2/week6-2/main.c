@@ -34,7 +34,7 @@ ISR(TIMER2_OVF_vect)
 
 ISR(INT0_vect){goStop=1;}//start
 ISR(INT1_vect){goStop=0;}//stop
-ISR(INT2_vect){//initialize
+ISR(INT4_vect){//initialize
 	str[1][0]=str[1][1]=str[1][3]=str[1][4]=str[1][6]=str[1][7]='0';
 	display(str[1],2);
 	goStop=0;
@@ -46,9 +46,11 @@ int main(void)
 	DDRB=0xff;
 	DDRD=0x00;
 	
-	SWITCH=0b00000000;//풀업저항 미사용
-	EICRA=0b00111111;// rising edge trigger
-	EIMSK=0b00000111;// 외부인터럽트 허용
+	SWITCH=0b00000111;//풀업저항 사용
+	
+	EICRA=0b00101010;// FALLING edge trigger
+	EICRB=0b00000010;
+	EIMSK=0b00010011;// 외부인터럽트 허용
 	
 	TCCR2 = 0b00000101; //프리스케일러 분주비 1024
 	TIMSK = 0b01000000; //오버플로우 인터럽트 허용
